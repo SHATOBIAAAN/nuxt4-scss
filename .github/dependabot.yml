@@ -10,6 +10,14 @@ updates:
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+    ignore:
+      # Типы Node идут за рантаймом из .node-version: мажор поднимают вместе с Node.
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
+      # TypeScript 7 — нативный компилятор без JS API, vue-tsc на нём не запускается.
+      # Правило снимают, когда vue-tsc объявит поддержку 7.x.
+      - dependency-name: typescript
+        versions: ['>=7.0.0']
 
   - package-ecosystem: github-actions
     directory: /
