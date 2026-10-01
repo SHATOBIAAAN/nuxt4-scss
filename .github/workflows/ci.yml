@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Версию pnpm берёт из packageManager в package.json, Node — из .node-version:
       # у CI и у разработчика один источник версий.
