@@ -23,7 +23,7 @@ jobs:
 
       # Версию pnpm берёт из packageManager в package.json, Node — из .node-version:
       # у CI и у разработчика один источник версий.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v5
         with:
