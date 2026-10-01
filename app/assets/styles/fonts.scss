@@ -18,61 +18,35 @@
 }
 
 /* Типографика — классы по размеру, а не по роли: макет приходит с конкретными px,
-   а привязка к h1/h2 мешает оформить «заголовок секции» уровнем ниже. */
+   а привязка к h1/h2 мешает оформить «заголовок секции» уровнем ниже. Число в имени —
+   размер на десктопе; к мобильному размеру шрифт уменьшается плавно (fluid в _tools),
+   без скачков на брейкпоинтах. */
 .caption {
   &-48 {
-    font-size: 48px;
+    font-size: fluid(32px, 48px);
     line-height: 1.05;
-
-    @include media-down(sm) {
-      font-size: 32px;
-    }
   }
 
   &-40 {
-    font-size: 40px;
+    font-size: fluid(26px, 40px);
     line-height: 1.05;
-
-    @include media-down(lg) {
-      font-size: 32px;
-    }
-
-    @include media-down(sm) {
-      font-size: 26px;
-    }
   }
 
   &-32 {
-    font-size: 32px;
+    font-size: fluid(22px, 32px);
     line-height: 1.1;
-
-    @include media-down(lg) {
-      font-size: 28px;
-    }
-
-    @include media-down(sm) {
-      font-size: 22px;
-    }
   }
 
   &-24 {
-    font-size: 24px;
+    font-size: fluid(20px, 24px);
     line-height: 1.15;
-
-    @include media-down(sm) {
-      font-size: 20px;
-    }
   }
 }
 
 .text {
   &-18 {
-    font-size: 18px;
+    font-size: fluid(16px, 18px);
     line-height: 1.45;
-
-    @include media-down(sm) {
-      font-size: 16px;
-    }
   }
 
   &-16 {

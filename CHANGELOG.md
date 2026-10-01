@@ -4,6 +4,33 @@
 проект подтягивает шаблон через `git merge upstream/main`, и без этого файла не с чем сверять,
 что именно поехало.
 
+## [0.3.0] — 2026-10-01
+
+### Fixed
+
+- щель между `media-down` и `media-up`: пара `max-width: X` / `min-width: X + 1px` при дробной
+  ширине окна (масштаб 110–125%) не срабатывала вовсе — `.only-mobile` и `.only-desktop`
+  прятались одновременно. Теперь `width < X` / `width >= X`
+- карусель переключалась на 2 слайда на 768px, а вёрстка считала 768px мобильной: числа
+  Swiper были захардкожены отдельно от SCSS
+- брейкпоинт `xs: 320px` не срабатывал на реальных телефонах (`html` не уже 320px) → `375px`
+
+### Added
+
+- `shared/utils/breakpoints.ts` — один источник чисел для SCSS (через `additionalData`) и JS
+- `fluid($min, $max)` в `_tools.scss` — плавный `clamp()` от xs до xl, границы в rem
+- тест: `@media` с шириной — только миксинами
+
+### Changed
+
+- **поведение брейкпоинтов**: `media-down(md)` — теперь «уже 768px» (было «до 768px
+  включительно»), `media-up(md)` — «от 768px» (было «от 769px»), как у min-width в Swiper и
+  Bootstrap. Сдвиг на 1px, вёрстку на реальных устройствах не меняет
+- `caption-*`, `text-18`, `--gap-24/32/48/64` растут плавно через `fluid()` вместо ступеней
+- зависимости: swiper 14, @vueuse/core 15, TypeScript 6.0, патчи модулей Nuxt, sass, oxc;
+  GitHub Actions: checkout, setup-node, upload-artifact v7, pnpm/action-setup v6
+- Dependabot не предлагает мажор `@types/node` (идёт за `.node-version`) и TypeScript 7
+
 ## [0.2.0] — 2026-09-28
 
 ### Fixed

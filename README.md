@@ -24,7 +24,8 @@ NUXT_PUBLIC_SITE_URL=https://example.com node .output/server/index.mjs
 1. `app/config/nav.ts` — навигация и контакты;
 2. `nuxt.config.ts` → `site` — название и описание (или переменные из `.env.example`);
 3. `app/assets/styles/colors.scss` — палитра бренда;
-4. `app/assets/styles/layout.scss` и `app/assets/styles/_tools.scss` — сетка, отступы, брейкпоинты;
+4. `app/assets/styles/layout.scss`, `app/assets/styles/_tools.scss` и `shared/utils/breakpoints.ts` —
+   сетка, отступы, миксины и числа брейкпоинтов;
 5. `shared/schemas/post.ts` + `server/mock/posts.ts` — своя сущность вместо поста.
 
 ## Проверки

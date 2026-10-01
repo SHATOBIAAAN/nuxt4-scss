@@ -8,6 +8,7 @@
    гидрации. Модуль A11y озвучивает слайды и прокручивает к слайду с фокусом. */
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { A11y } from 'swiper/modules';
+import { BREAKPOINTS } from '#shared/utils/breakpoints';
 import 'swiper/css';
 import 'swiper/css/a11y';
 
@@ -20,7 +21,11 @@ defineProps<{
 defineSlots<{ slide(props: { item: T; index: number }): unknown }>();
 
 const MODULES = [A11y];
-const BREAKPOINTS = { 768: { slidesPerView: 2 }, 1200: { slidesPerView: 3 } };
+// Swiper сравнивает ширину окна как min-width — так же, как media-up в стилях
+const SLIDES_BY_WIDTH = {
+  [BREAKPOINTS.md]: { slidesPerView: 2 },
+  [BREAKPOINTS.xl]: { slidesPerView: 3 },
+};
 </script>
 
 <template>
@@ -31,7 +36,7 @@ const BREAKPOINTS = { 768: { slidesPerView: 2 }, 1200: { slidesPerView: 3 } };
     :modules="MODULES"
     :slides-per-view="1"
     :space-between="16"
-    :breakpoints="BREAKPOINTS"
+    :breakpoints="SLIDES_BY_WIDTH"
     loop
   >
     <SwiperSlide v-for="(item, index) in items" :key="index">

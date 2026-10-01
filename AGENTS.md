@@ -6,7 +6,7 @@
 
 ## Стек
 
-Nuxt 4.5 · Vue 3.5 · TypeScript strict · Pinia (UI-состояние) · SCSS-токены, Tailwind нет ·
+Nuxt 4.5 · Vue 3.5 · TypeScript 6 strict (7 ждёт поддержки в vue-tsc) · Pinia (UI-состояние) · SCSS-токены, Tailwind нет ·
 reka-ui (headless) · Swiper через `<UiCarousel>` · GSAP через `useReveal` · `@nuxt/scripts` для
 сторонних скриптов · ofetch (`useApiFetch`), axios нет · zod на обеих сторонах · oxlint + oxfmt,
 Prettier и ESLint нет · vitest (unit + компоненты через `@nuxt/test-utils`) · Playwright (e2e) ·
@@ -42,7 +42,9 @@ pnpm 11, Node 24.
    запрещена линтером (`vue/define-props-declaration`).
 4. Локальные классы — с префиксом `_` (`._Button`).
 5. Цвет — только переменной из `app/assets/styles/colors.scss`: литерал цвета в `.vue` роняет тест.
-6. Брейкпоинт — только миксином: `@include media-down(lg)`, `@include media-up(lg)`.
+6. Брейкпоинт — только миксином: `@include media-down(lg)` (уже lg), `@include media-up(lg)` (lg и
+   шире), тест ловит `@media` с шириной в обход них. Числа — в `shared/utils/breakpoints.ts`, в JS
+   импортируй оттуда. Размер «меньше на мобильном» — `fluid(20px, 24px)`, без лесенки медиазапросов.
 7. Hover — `@include hover { … }` (тест ловит `:hover` вне `@media (pointer: fine)`),
    движение — `@include motion { … }`.
 8. Динамический NuxtLink — `resolveComponent('NuxtLink')`, не строка в `:is` (тест).

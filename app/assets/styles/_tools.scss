@@ -1,37 +1,57 @@
 @use 'sass:map';
+@use 'sass:math';
 
-/* Брейкпоинты и миксины. CSS файл не выводит: nuxt.config.ts подключает его в каждый
-   <style lang="scss"> через additionalData. Числа брейкпоинтов живут только здесь —
-   в @media CSS-переменные не работают. */
+/* Брейкпоинты, миксины и функции. CSS файл не выводит: nuxt.config.ts подключает его в
+   каждый <style lang="scss"> через additionalData и там же передаёт $breakpoints из
+   shared/utils/breakpoints.ts — числа брейкпоинтов живут только в том файле. */
 
-$breakpoints: (
-  xs: 320px,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-);
+$breakpoints: () !default;
 
 @function breakpoint($name) {
   @if not map.has-key($breakpoints, $name) {
-    @error 'Нет брейкпоинта «#{$name}». Есть: #{map.keys($breakpoints)}';
+    @error 'Нет брейкпоинта «#{$name}». Есть: #{map.keys($breakpoints)}. Карта приходит из nuxt.config.ts (additionalData)';
   }
 
   @return map.get($breakpoints, $name);
 }
 
-/// Экран не шире брейкпоинта: `@include media-down(lg) { ... }`
+/* Запросы — синтаксисом диапазонов (Media Queries 4). Пара `width < X` / `width >= X`
+   делит любую ширину ровно на две части. Старая пара max-width: X / min-width: X + 1px
+   оставляла щель: при масштабе 110–125% ширина окна бывает дробной (768.5px), и тогда
+   не срабатывал ни один из двух запросов. */
+
+/// Экран уже брейкпоинта: `@include media-down(lg) { ... }`
 @mixin media-down($name) {
-  @media (max-width: breakpoint($name)) {
+  @media (width < #{breakpoint($name)}) {
     @content;
   }
 }
 
-/// Экран шире брейкпоинта — пара к media-down без зазора и пересечения
+/// Экран от брейкпоинта и шире — пара к media-down без зазора и пересечения.
+/// Совпадает с тем, как брейкпоинты понимают Swiper и matchMedia('(min-width: …)').
 @mixin media-up($name) {
-  @media (min-width: breakpoint($name) + 1px) {
+  @media (width >= #{breakpoint($name)}) {
     @content;
   }
+}
+
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+@function -round($value) {
+  @return math.div(math.round($value * 10000), 10000);
+}
+
+/// Размер, который плавно растёт с шириной экрана: $min до брейкпоинта xs, $max от xl,
+/// между ними — по прямой. Заменяет лесенку из media-down: нет скачков между
+/// брейкпоинтами. Границы в rem — увеличенный в браузере шрифт растит и их.
+/// `font-size: fluid(26px, 40px);` · `--gap-48: #{fluid(32px, 48px)};`
+@function fluid($min, $max, $from: breakpoint(xs), $to: breakpoint(xl)) {
+  $slope: math.div($max - $min, $to - $from);
+  $base: $min - $slope * $from;
+
+  @return clamp(#{rem($min)}, #{-round(rem($base))} + #{-round($slope * 100vw)}, #{rem($max)});
 }
 
 /// Hover только при точном указателе: на тач-экране :hover залипает на последнем нажатии

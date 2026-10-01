@@ -1,4 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { BREAKPOINTS } from './shared/utils/breakpoints';
+
+/** BREAKPOINTS → `(xs: 375px, sm: 576px, …)` — карта Sass для _tools.scss */
+const scssBreakpoints = `(${Object.entries(BREAKPOINTS)
+  .map(([name, px]) => `${name}: ${px}px`)
+  .join(', ')})`;
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -56,8 +63,11 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         /* Брейкпоинты и миксины доступны в каждом <style lang="scss">. В @media
-           CSS-переменные не работают, поэтому брейкпоинты живут только в SCSS. */
-        scss: { additionalData: '@use "~/assets/styles/tools" as *;\n' },
+           CSS-переменные не работают, поэтому числа приходят в SCSS на сборке — из
+           shared/utils/breakpoints.ts, того же файла, что читает JS. */
+        scss: {
+          additionalData: `@use "~/assets/styles/tools" as * with ($breakpoints: ${scssBreakpoints});\n`,
+        },
       },
     },
   },
