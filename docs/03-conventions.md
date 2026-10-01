@@ -35,7 +35,10 @@ Nuxt не зарегистрирует. Тест не даст забыть до
 ## Стили
 
 - цвет, отступ, радиус, слой — только переменной из `app/assets/styles/`;
-- брейкпоинты — миксинами `media-down` / `media-up` из `_tools.scss`: числа живут в одном месте;
+- брейкпоинты — миксинами `media-down` (`width < X`) / `media-up` (`width >= X`) из `_tools.scss`,
+  `@media` с шириной мимо них роняет тест; числа — в `shared/utils/breakpoints.ts`, оттуда же
+  их берёт JS (Swiper);
+- размер, который на мобильном меньше, — `fluid($min, $max)`, а не лесенка из `media-down`;
 - `@include hover` вместо `:hover`, `@include motion` для переходов;
 - утилиты каркаса: `content-wrapper`, `grid-12` + `col-N`, `grid-cards`, `card-surface`,
   `radius-*`, `caption-*`, `text-*`, `visually-hidden`;

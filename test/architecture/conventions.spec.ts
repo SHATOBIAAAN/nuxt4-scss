@@ -134,6 +134,26 @@ describe('разметка и стили', () => {
     expect(offenders).toEqual([]);
   });
 
+  it('ширина в @media — только миксинами media-up / media-down', () => {
+    /* Число в @media мимо миксина расходится с shared/utils/breakpoints.ts при первой
+       же правке брейкпоинтов. Сами миксины живут в _tools.scss — он исключение. */
+    const RAW_WIDTH = /@media[^{]*\b(?:min-|max-)?width\b/;
+    const styles = [
+      ...vueFiles.flatMap((file) => styleBlocks(file).map((css) => [file, css] as const)),
+      ...withExt(walk('app/assets/styles'), '.scss')
+        .filter((file) => !file.endsWith('/_tools.scss'))
+        .map((file) => [file, stripComments(read(file))] as const),
+    ];
+    const offenders = styles.flatMap(([file, css]) =>
+      css
+        .split('\n')
+        .filter((line) => RAW_WIDTH.test(line))
+        .map((line) => `${file}: ${line.trim()}`),
+    );
+
+    expect(offenders).toEqual([]);
+  });
+
   it('на каждой странице ровно один <h1>', () => {
     const pages = [...withExt(walk('app/pages'), '.vue'), 'app/error.vue'];
     const offenders = pages

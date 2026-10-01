@@ -28,7 +28,7 @@ app/
     overlay.ts                открыто ли меню
   utils/pagination.ts         номера страниц навигатора
   config/nav.ts               навигация и контакты
-  assets/styles/              _tools (брейкпоинты, миксины) · colors · ui · fonts · layout · global
+  assets/styles/              _tools (миксины, fluid) · colors · ui · fonts · layout · global
 
 server/
   api/posts.get.ts            список: валидация query, кеш по каноническому ключу
@@ -59,7 +59,8 @@ test/
 | Палитра                   | `app/assets/styles/colors.scss`                            |
 | Типографика               | `app/assets/styles/fonts.scss`                             |
 | Сетка, отступы, слои      | `app/assets/styles/layout.scss`                            |
-| Брейкпоинты               | `app/assets/styles/_tools.scss`                            |
+| Брейкпоинты (числа)       | `shared/utils/breakpoints.ts`                              |
+| Миксины, `fluid()`        | `app/assets/styles/_tools.scss`                            |
 | Меню и контакты           | `app/config/nav.ts`                                        |
 | Форма данных              | `shared/schemas/`                                          |
 | Политика CSP              | `server/utils/csp.ts`                                      |
