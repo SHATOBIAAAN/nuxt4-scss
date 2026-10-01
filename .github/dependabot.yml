@@ -1,0 +1,17 @@
+# Обновления приходят пачкой раз в неделю: минорные и патчи одним PR, мажорные —
+# отдельно, потому что их читают по changelog. CI на PR проверяет всё то же, что и на main.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

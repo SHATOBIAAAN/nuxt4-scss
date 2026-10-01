@@ -1,0 +1,6 @@
+{
+  // Oxc (линт и формат), Vue (Volar) и Playwright для e2e. Prettier — в списке «не надо»:
+  // он форматирует по-своему и краснит CI на fmt:check.
+  "recommendations": ["oxc.oxc-vscode", "vue.volar", "ms-playwright.playwright"],
+  "unwantedRecommendations": ["esbenp.prettier-vscode"]
+}

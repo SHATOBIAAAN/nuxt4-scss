@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Токену CI нужно только читать код: запись в репозиторий из сборки — лишняя поверхность атаки.
+permissions:
+  contents: read
+
+# Новый пуш в ту же ветку отменяет устаревший прогон.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      # Версию pnpm берёт из packageManager в package.json, Node — из .node-version:
+      # у CI и у разработчика один источник версий.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Сначала быстрые проверки: формат и линт ловят мелочи до долгих шагов.
+      - run: pnpm fmt:check
+      - run: pnpm lint
+
+      # Единственный барьер внутри <template>: oxlint разбирает в .vue только <script>.
+      - run: pnpm typecheck
+
+      # Юнит-тесты и правила дерева (test/architecture): v-html, цвета, мёртвые пакеты и компоненты.
+      - run: pnpm test
+
+      - run: pnpm build
+
+      # Браузер против прод-сборки: консоль без ошибок, CSP, гидрация, навигация, поиск.
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

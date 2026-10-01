@@ -1,0 +1,33 @@
+/* Точка входа глобальных стилей. Подключается списком `css` в nuxt.config.ts, а не
+   импортом в app.vue: error.vue рендерится вне app.vue, и 404 приезжала бы без стилей. */
+@use 'colors';
+@use 'ui';
+@use 'fonts';
+@use 'layout';
+
+html {
+  /* Место под полосу прокрутки зарезервировано заранее: иначе переход на короткую
+     страницу сдвигает вёрстку на ширину скроллбара. */
+  scrollbar-gutter: stable;
+}
+
+body * {
+  scrollbar-width: thin;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}

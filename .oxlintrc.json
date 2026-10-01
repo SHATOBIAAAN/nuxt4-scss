@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // Список плагинов заменяет набор по умолчанию целиком: правило из плагина,
+  // которого здесь нет, молча не работает (так было с import/no-cycle).
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "node", "vue", "vitest"],
+  "ignorePatterns": [
+    ".nuxt",
+    ".output",
+    ".data",
+    "dist",
+    "node_modules",
+    "playwright-report",
+    "test-results"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-debugger": "error",
+    "no-var": "error",
+    "eqeqeq": ["error", "smart"],
+    "typescript/no-explicit-any": "warn",
+    "typescript/consistent-type-imports": "error",
+    "unicorn/prefer-node-protocol": "error",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    // Импорт без переменной — только для стилей библиотек (import 'swiper/css')
+    "import/no-unassigned-import": [
+      "warn",
+      { "allow": ["**/*.css", "swiper/css", "swiper/css/*"] }
+    ],
+    "vue/define-props-declaration": ["error", "type-based"],
+    "vue/define-emits-declaration": ["error", "type-based"],
+    "vue/no-import-compiler-macros": "error",
+    "vue/prefer-import-from-vue": "error"
+  },
+  "overrides": [
+    {
+      // process.env в коде приложения запекает значение в сборку; настройки — через runtimeConfig
+      "files": ["app/**"],
+      "rules": { "node/no-process-env": "error" }
+    },
+    {
+      // В тестах шаги идут по очереди намеренно: одна вкладка браузера, один сценарий
+      "files": ["test/**"],
+      "rules": { "no-await-in-loop": "off" }
+    }
+  ]
+}

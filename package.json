@@ -1,0 +1,67 @@
+{
+  "name": "nuxt4-scss",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare && simple-git-hooks",
+    "typecheck": "nuxt typecheck && tsc -p tsconfig.tooling.json",
+    "lint": "oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt . --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "check": "pnpm fmt:check && pnpm lint && pnpm typecheck && pnpm test"
+  },
+  "dependencies": {
+    "@nuxt/scripts": "^1.3.9",
+    "@nuxtjs/robots": "^6.2.3",
+    "@nuxtjs/sitemap": "^8.5.1",
+    "@pinia/nuxt": "^1.0.2",
+    "@vueuse/core": "^14.1.0",
+    "gsap": "^3.15.0",
+    "nuxt": "^4.5.2",
+    "pinia": "^4.0.3",
+    "reka-ui": "^2.10.5",
+    "swiper": "^12.2.0",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^4.3.2",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.19.0",
+    "@vue/test-utils": "^2.5.1",
+    "happy-dom": "^20.14.5",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "^0.70.0",
+    "oxlint": "^1.85.0",
+    "sass": "^1.105.0",
+    "simple-git-hooks": "^2.14.0",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.2",
+    "vue-tsc": "^3.3.11"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,mts,js,mjs,vue}": [
+      "oxlint --fix --deny-warnings",
+      "oxfmt"
+    ],
+    "*.{scss,css,json,jsonc,md,yml,yaml}": [
+      "oxfmt"
+    ]
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "pnpm@11.25.0"
+}

@@ -1,0 +1,146 @@
+@use 'tools' as *;
+
+:root {
+  /* Сетка макета: 12 колонок, контейнер фиксированной ширины с автоцентровкой.
+     Значения подобраны под 1920 и сужаются ступенями. */
+  --wrapper-width: 1240px;
+  --wrapper-horizontal-padding: 55px;
+  --wrapper-max-width: calc(var(--wrapper-width) + var(--wrapper-horizontal-padding) * 2);
+
+  --grid-columns: 12;
+  --grid-gutter: 16px;
+
+  --header-height: 70px;
+  --section-gap: 40px;
+
+  --gap-96: 96px;
+  --gap-72: 72px;
+  --gap-64: 64px;
+  --gap-48: 48px;
+  --gap-40: 40px;
+  --gap-32: 32px;
+  --gap-24: 24px;
+  --gap-20: 20px;
+  --gap-16: 16px;
+  --gap-12: 12px;
+  --gap-8: 8px;
+  --gap-4: 4px;
+
+  /* Слои: шапка ниже шторки меню, шторка ниже диалога подтверждения */
+  --z-header: 100;
+  --z-drawer: 200;
+  --z-dialog: 300;
+
+  @include media-down(xl) {
+    --wrapper-horizontal-padding: 30px;
+  }
+
+  @include media-down(lg) {
+    --gap-64: 56px;
+    --gap-48: 40px;
+    --gap-32: 24px;
+  }
+
+  @include media-down(md) {
+    --wrapper-horizontal-padding: 20px;
+    --grid-columns: 6;
+  }
+
+  @include media-down(sm) {
+    --gap-64: 48px;
+    --gap-48: 32px;
+    --gap-24: 20px;
+  }
+
+  @include media-down(xs) {
+    --wrapper-horizontal-padding: 15px;
+    --grid-columns: 4;
+    --header-height: 56px;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+  background-color: var(--page-bg);
+}
+
+/* Плавная прокрутка — только если человек её не отключал: у части людей она
+   вызывает укачивание. */
+@include motion {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+#__nuxt,
+.page-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+header,
+footer {
+  flex: 0 0 auto;
+}
+
+.content-wrapper {
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--wrapper-max-width);
+  padding-left: var(--wrapper-horizontal-padding);
+  padding-right: var(--wrapper-horizontal-padding);
+}
+
+.grid {
+  &-12 {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    gap: var(--grid-gutter);
+  }
+
+  /* Сетка карточек подбирает число колонок сама: карточка не уже 280px, и списку
+     не нужны брейкпоинты. min() не даёт колонке вылезти за экран уже 280px. */
+  &-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: var(--grid-gutter);
+  }
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    grid-column: span $i;
+  }
+}
+
+/* На узких экранах колонок меньше: span шире сетки создал бы неявные колонки,
+   поэтому широкие блоки занимают всю строку. */
+@include media-down(md) {
+  @for $i from 7 through 12 {
+    .col-#{$i} {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+@include media-down(xs) {
+  @for $i from 5 through 12 {
+    .col-#{$i} {
+      grid-column: 1 / -1;
+    }
+  }
+}

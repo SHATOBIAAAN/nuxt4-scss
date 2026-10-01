@@ -1,0 +1,92 @@
+@use 'tools' as *;
+
+/* Шрифт — системный стек. Бренд-шрифт подключают так:
+   1. файлы .woff2 — в public/fonts/, имена латиницей (кириллические пути в public/
+      git отдаёт экранированными, часть CDN на них падает);
+   2. @font-face здесь, с font-display: swap;
+   3. имя шрифта — в начало --font-sans.
+   Стороннюю таблицу шрифтов (Google Fonts) CSP не пропустит, и это правильно:
+   IP и User-Agent посетителя ушли бы третьей стороне. */
+
+:root {
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  line-height: 1.2;
+}
+
+/* Типографика — классы по размеру, а не по роли: макет приходит с конкретными px,
+   а привязка к h1/h2 мешает оформить «заголовок секции» уровнем ниже. */
+.caption {
+  &-48 {
+    font-size: 48px;
+    line-height: 1.05;
+
+    @include media-down(sm) {
+      font-size: 32px;
+    }
+  }
+
+  &-40 {
+    font-size: 40px;
+    line-height: 1.05;
+
+    @include media-down(lg) {
+      font-size: 32px;
+    }
+
+    @include media-down(sm) {
+      font-size: 26px;
+    }
+  }
+
+  &-32 {
+    font-size: 32px;
+    line-height: 1.1;
+
+    @include media-down(lg) {
+      font-size: 28px;
+    }
+
+    @include media-down(sm) {
+      font-size: 22px;
+    }
+  }
+
+  &-24 {
+    font-size: 24px;
+    line-height: 1.15;
+
+    @include media-down(sm) {
+      font-size: 20px;
+    }
+  }
+}
+
+.text {
+  &-18 {
+    font-size: 18px;
+    line-height: 1.45;
+
+    @include media-down(sm) {
+      font-size: 16px;
+    }
+  }
+
+  &-16 {
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  &-14 {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  &-12 {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}

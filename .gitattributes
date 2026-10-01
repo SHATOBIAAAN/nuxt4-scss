@@ -1,0 +1,15 @@
+# Окно проекта — Windows, а форматтер работает с LF. Без этой строки git по
+# autocrlf может выдать CRLF при клонировании, и первый же `pnpm fmt` переписывает
+# переводы строк во всех файлах — диф, в котором нечего смотреть.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary

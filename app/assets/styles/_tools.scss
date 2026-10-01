@@ -1,0 +1,51 @@
+@use 'sass:map';
+
+/* Брейкпоинты и миксины. CSS файл не выводит: nuxt.config.ts подключает его в каждый
+   <style lang="scss"> через additionalData. Числа брейкпоинтов живут только здесь —
+   в @media CSS-переменные не работают. */
+
+$breakpoints: (
+  xs: 320px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+@function breakpoint($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Нет брейкпоинта «#{$name}». Есть: #{map.keys($breakpoints)}';
+  }
+
+  @return map.get($breakpoints, $name);
+}
+
+/// Экран не шире брейкпоинта: `@include media-down(lg) { ... }`
+@mixin media-down($name) {
+  @media (max-width: breakpoint($name)) {
+    @content;
+  }
+}
+
+/// Экран шире брейкпоинта — пара к media-down без зазора и пересечения
+@mixin media-up($name) {
+  @media (min-width: breakpoint($name) + 1px) {
+    @content;
+  }
+}
+
+/// Hover только при точном указателе: на тач-экране :hover залипает на последнем нажатии
+@mixin hover {
+  @media (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+/// Движение — только если человек не просил его уменьшить
+@mixin motion {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  // nuxt typecheck проверяет app/, server/, shared/ и test/nuxt/, но не остальные тесты
+  // и конфиги инструментов: без этого файла они не проверялись бы вовсе.
+  "extends": "./.nuxt/tsconfig.node.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "paths": {
+      "#shared/*": ["./shared/*"],
+      "~/*": ["./app/*"]
+    }
+  },
+  "include": ["test/**/*.ts", "vitest.config.ts", "playwright.config.ts"],
+  // компонентные тесты проверяет nuxt typecheck — там есть автоимпорты и #components
+  "exclude": ["test/nuxt/**"]
+}

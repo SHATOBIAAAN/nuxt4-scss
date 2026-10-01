@@ -1,0 +1,22 @@
+{
+  // Формат и линт — oxc (настройки в .oxfmtrc.json и .oxlintrc.json). Prettier в проекте
+  // нет: если расширение установлено, оно спорит с oxfmt и краснит CI на fmt:check.
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "search.exclude": {
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/node_modules": true,
+    "**/pnpm-lock.yaml": true
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false,
+    "files.trimTrailingWhitespace": false
+  }
+}

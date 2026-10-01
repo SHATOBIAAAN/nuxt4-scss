@@ -1,0 +1,14 @@
+# pnpm 11 не запускает postinstall-скрипты зависимостей, пока их явно не разрешить здесь.
+# Без этого `pnpm install` падает с ERR_PNPM_IGNORED_BUILDS, а часть пакетов работает
+# хуже или не работает вовсе. Разрешаем ровно то, что проверили, — и ничего больше.
+allowBuilds:
+  # скачивает бинарник сборщика — без него не поднимется ни dev, ни build
+  esbuild: true
+  # нативный watcher файлов: без него dev-режим следит за файлами заметно медленнее
+  '@parcel/watcher': true
+  # postinstall подкладывает shim под установленную мажорную версию Vue.
+  # Приходит цепочкой reka-ui -> @floating-ui/vue -> vue-demi, и без разрешения
+  # импорт reka-ui падает уже в браузере.
+  vue-demi: true
+  # ставит git-хуки из блока "simple-git-hooks" в package.json
+  simple-git-hooks: true

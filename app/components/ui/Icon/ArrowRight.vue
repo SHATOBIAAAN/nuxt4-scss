@@ -1,0 +1,11 @@
+<template>
+  <UiIconBase>
+    <path
+      d="M3 8h10M9 4l4 4-4 4"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </UiIconBase>
+</template>

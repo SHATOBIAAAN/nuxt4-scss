@@ -1,0 +1,84 @@
+/* Единый источник цвета. Компоненты ссылаются только на семантические переменные,
+   литерал цвета в .vue — ошибка (следит test/architecture). Роль, а не оттенок:
+   «--brand-primary» остаётся, меняется значение — и перекрашивается весь сайт.
+
+   Текст на --page-bg и --surface-muted держит контраст не ниже 4.5:1 (WCAG AA),
+   фокус-кольцо — не ниже 3:1. Новый оттенок проверяют тем же порогом. */
+:root {
+  /* нейтральная база */
+  --page-bg: #ffffff;
+  --surface: #ffffff;
+  --surface-muted: #f5f7fb;
+  --header-bg: #ffffff;
+
+  /* текст */
+  --text-primary: #1f2430;
+  --text-secondary: #5d6a83;
+  --text-muted: #667085;
+  --placeholder: var(--text-muted);
+
+  /* бренд */
+  --brand-primary: #204ecf;
+  --brand-primary-dark: #163b9f;
+  --brand-accent: #dbe7ff;
+  --brand-contrast: #ffffff;
+
+  /* границы, состояния, фокус */
+  --line: #d7dfef;
+  --success: #2b7a4b;
+  --danger: #c2375f;
+  --focus-color: var(--brand-primary);
+
+  /* подложки и тени */
+  --overlay: rgb(15 23 42 / 40%);
+  --selection: rgb(32 78 207 / 16%);
+  --shadow-card: 0 24px 60px rgb(33 58 121 / 8%);
+  --shadow-dialog: 0 24px 60px rgb(15 23 42 / 20%);
+
+  color: var(--text-primary);
+  background-color: var(--page-bg);
+}
+
+::selection {
+  background-color: var(--selection);
+}
+
+.background {
+  &-page {
+    background-color: var(--page-bg);
+  }
+
+  &-surface {
+    background-color: var(--surface);
+  }
+
+  &-surface-muted {
+    background-color: var(--surface-muted);
+  }
+
+  &-brand {
+    background-color: var(--brand-primary);
+  }
+}
+
+.text {
+  &-primary {
+    color: var(--text-primary);
+  }
+
+  &-secondary {
+    color: var(--text-secondary);
+  }
+
+  &-muted {
+    color: var(--text-muted);
+  }
+
+  &-brand {
+    color: var(--brand-primary);
+  }
+
+  &-contrast {
+    color: var(--brand-contrast);
+  }
+}
