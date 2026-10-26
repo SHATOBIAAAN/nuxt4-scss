@@ -49,6 +49,12 @@ pnpm 11, Node 24.
    движение — `@include motion { … }`.
 8. Динамический NuxtLink — `resolveComponent('NuxtLink')`, не строка в `:is` (тест).
 9. На странице ровно один видимый `<h1>` (тест).
+10. Портал reka-ui — в `<ClientOnly>` с пустым `<template #fallback />` (тест). Окно на весь экран
+    (`position: fixed; inset: 0`) — `data-covers-page` на его подложке и фон `--page-bg`: пока оно
+    открыто, страница под ним спрятана (`layout.scss`) — Safari на iOS 26 не рисует fixed под
+    своими панелями, и там проступала бы страница (e2e).
+11. Плавная прокрутка — только в `app/router.options.ts` (якорь на той же странице), не стилем
+    (тест).
 
 ## Как добавлять сущность
 
@@ -87,22 +93,36 @@ pnpm 11, Node 24.
 
 ## Известные ловушки
 
-| Ловушка                                                                | Что делать                                                                                                   |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Строка `'NuxtLink'` в `<component :is>`                                | рендерится неизвестным тегом без `href`, молча. Только `resolveComponent('NuxtLink')`                        |
-| Свой `getKey` у `defineCachedEventHandler`                             | Nitro режет ключ `replace(/\W/g, '')`: кириллица пропадает. Ключ — `canonicalQueryKey` (hex)                 |
-| `schema.parse(getQuery(event))` в ручке                                | ZodError даёт 500. Нужен `getValidatedQuery` — он отвечает 400                                               |
-| `Intl.DateTimeFormat` в шаблоне                                        | часовые пояса сервера и браузера разные → гидрация. Используй `<NuxtTime>`                                   |
-| `watch` без `immediate` как источник данных для разметки               | на сервере не выполняется → SSR и клиент расходятся. Данные для рендера — через `computed`                   |
-| Композабл внутри ленивого геттера (`title: () => useRuntimeConfig()…`) | снимай значение в setup, в геттере — переменную. Иначе `NUXT_E1001`                                          |
-| Композабл после `await` внутри своего async-композабла                 | контекст Nuxt потерян. Всё — до первого `await`, навигация — через `nuxtApp.runWithContext`                  |
-| Портал reka-ui без `<ClientOnly>`                                      | SSR рендерит пустоту → «Hydration completed but contains mismatches»                                         |
-| `DialogContent` без `DialogDescription`                                | рендери описание всегда, пустое — с классом `visually-hidden`                                                |
-| Модуль дописывает inline-скрипт в HTML                                 | CSP-плагин ставит nonce и ему; если скрипт всё же заблокирован — e2e покажет это в консоли                   |
-| Проверка окружения в `nuxt.config.ts`                                  | нельзя: `NODE_ENV=production` и в typecheck, и в prepare. Адрес сайта проверяет `server/plugins/site-url.ts` |
-| Алиасы в `server/`                                                     | `#shared/…` работает с обеих сторон и в vitest; `nitro.alias` в типы не попадает                             |
-| Кириллица в именах файлов `public/`                                    | запрещена (тест)                                                                                             |
-| `pnpm install` молча не запускает postinstall                          | разреши сборку в `pnpm-workspace.yaml → allowBuilds` с причиной                                              |
+| Ловушка                                                                                   | Что делать                                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Строка `'NuxtLink'` в `<component :is>`                                                   | рендерится неизвестным тегом без `href`, молча. Только `resolveComponent('NuxtLink')`                                                                                                             |
+| Свой `getKey` у `defineCachedEventHandler`                                                | Nitro режет ключ `replace(/\W/g, '')`: кириллица пропадает. Ключ — `canonicalQueryKey` (hex)                                                                                                      |
+| `schema.parse(getQuery(event))` в ручке                                                   | ZodError даёт 500. Нужен `getValidatedQuery` — он отвечает 400                                                                                                                                    |
+| `Intl.DateTimeFormat` в шаблоне                                                           | часовые пояса сервера и браузера разные → гидрация. Используй `<NuxtTime>`                                                                                                                        |
+| `watch` без `immediate` как источник данных для разметки                                  | на сервере не выполняется → SSR и клиент расходятся. Данные для рендера — через `computed`                                                                                                        |
+| Композабл внутри ленивого геттера (`title: () => useRuntimeConfig()…`)                    | снимай значение в setup, в геттере — переменную. Иначе `NUXT_E1001`                                                                                                                               |
+| Композабл после `await` внутри своего async-композабла                                    | контекст Nuxt потерян. Всё — до первого `await`, навигация — через `nuxtApp.runWithContext`                                                                                                       |
+| Портал reka-ui без `<ClientOnly>`                                                         | SSR рендерит пустоту → «Hydration completed but contains mismatches»                                                                                                                              |
+| `DialogContent` без `DialogDescription`                                                   | рендери описание всегда, пустое — с классом `visually-hidden`                                                                                                                                     |
+| Модуль дописывает inline-скрипт в HTML                                                    | CSP-плагин ставит nonce и ему; если скрипт всё же заблокирован — e2e покажет это в консоли                                                                                                        |
+| Проверка окружения в `nuxt.config.ts`                                                     | нельзя: `NODE_ENV=production` и в typecheck, и в prepare. Адрес сайта проверяет `server/plugins/site-url.ts`                                                                                      |
+| Алиасы в `server/`                                                                        | `#shared/…` работает с обеих сторон и в vitest; `nitro.alias` в типы не попадает                                                                                                                  |
+| Кириллица в именах файлов `public/`                                                       | запрещена (тест)                                                                                                                                                                                  |
+| `pnpm install` молча не запускает postinstall                                             | разреши сборку в `pnpm-workspace.yaml → allowBuilds` с причиной                                                                                                                                   |
+| `<ClientOnly>` без `#fallback`                                                            | до монтирования ставит пустой `<span>`: во flex-строке лишний элемент, после гидрации соседи прыгают. Пустой `<template #fallback />` (тест)                                                      |
+| Замок прокрутки reka-ui (`body` overflow: hidden) при своём `overflow` у `html`           | `body` становится контейнером прокрутки: страница под окном листается, липкая шапка уезжает к началу страницы. Запирать окно (`html`), `body` не трогать — `layout.scss` (e2e)                    |
+| Окно на весь экран (`position: fixed; inset: 0`) в Safari на iOS 26                       | под плашкой адреса и часами проступает страница: fixed там не рисуется. `data-covers-page` на подложке — страница прячется, под панелями фон `html`; фон окна — `--page-bg` (e2e)                 |
+| `scroll-behavior: smooth` у `html`                                                        | новая страница открывается с места прежней, якорь при загрузке не доезжает: ScrollTrigger сбивает плавную прокрутку. Плавно — только `app/router.options.ts` (тест)                               |
+| `import { z } from 'zod'`                                                                 | zod 4 пробует `Function('')` — под CSP сайта это нарушение, Firefox пишет его в консоль. Только `shared/utils/zod.ts` с jitless (тест, e2e в Firefox)                                             |
+| Поле ввода мельче 16 px                                                                   | iPhone приближает страницу при фокусе и сам не отдаляет. Кегль полей — от 16 (e2e на iPhone)                                                                                                      |
+| `focus()` из кода после асинхронного действия (окно «Отправлено»)                         | Firefox рисует такой фокус как с клавиатуры: свечение на кнопке при каждом открытии. `focus({ focusVisible: false })`; в типах TypeScript опции нет — `FocusOptions & { focusVisible?: boolean }` |
+| `context` из `gsap.context()` в `onEnter` ScrollTrigger                                   | блок уже позади старта («Назад» вернул место раньше GSAP) — onEnter зовётся при создании, context ещё не готов: ReferenceError. В onEnter — без него                                              |
+| `clip-path`, `letter-spacing`, маска SVG в анимации первого экрана или слоя во весь экран | перерисовка на каждом кадре, рывки под гидрацией. Анимировать `transform` и `opacity`, декор — на своём слое (`will-change`)                                                                      |
+| `getPointAtLength` в цикле                                                                | каждый вызов проходит путь с начала: сотни мс главного потока, рывок прокрутки. Точки — один раз, проходом по пути                                                                                |
+| `useScript` для скрипта с ключом, ограниченным по Referer                                 | unhead ставит чужому скрипту `no-referrer` и `crossorigin`: сервис (Яндекс Карты) отклонит ключ. Такой скрипт — своим `<script>`, источник — в CSP                                                |
+| `border-radius` с `overflow` у холста WebGL и чужого iframe                               | Firefox их не обрезает: холст рисует видеокарта, iframe — в своём процессе. Углы — закраской цветом страницы поверх                                                                               |
+| Ключ `useStorage` с адресом и query (`/posts?page=2`)                                     | unstorage отбрасывает всё после «?» и делит ключ по «/» и «:» — все порции списка ложатся в один слот. Адрес в ключе — `encodeURIComponent`                                                       |
+| Бренд-шрифт без preload и подогнанного запасного                                          | Firefox рисует первый кадр запасным шрифтом, и строка перестраивается на глазах. Шаги — в `fonts.scss`; ширина групп в строке — из макета, а не по тексту                                         |
 
 ## Проверки и их слепые зоны
 
@@ -112,11 +132,13 @@ pnpm lint        # <script>, с предупреждениями как ошиб
 pnpm typecheck   # типы и props в шаблонах + тесты и конфиги (tsconfig.tooling.json)
 pnpm test        # unit, правила дерева (test/architecture), компоненты (test/nuxt)
 pnpm build       # собираемость
-pnpm test:e2e    # браузер против прод-сборки: консоль, гидрация, CSP, навигация, поиск
+pnpm test:e2e    # браузер против прод-сборки: консоль, гидрация, CSP, навигация, поиск;
+                 # engines.e2e.ts — ещё в Firefox, WebKit и WebKit с эмуляцией iPhone
 ```
 
 E2E — единственное, что видит ошибки гидрации и нарушения CSP. После правки, которая меняет
-рендер, гоняй `pnpm build && pnpm test:e2e`, а не только `lint` и `typecheck`.
+рендер, гоняй `pnpm build && pnpm test:e2e`, а не только `lint` и `typecheck`. Чего не видит и
+он: панелей настоящего Safari на iPhone — их проверяют руками (`docs/04-before-prod.md`, п. 9).
 
 ## Тесты
 

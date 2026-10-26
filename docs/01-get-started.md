@@ -6,7 +6,7 @@
 corepack enable          # pnpm возьмётся из packageManager в package.json
 node -v                  # >= 24 (версия для CI — в .node-version)
 pnpm install             # postinstall генерирует типы и ставит git-хуки
-pnpm exec playwright install chromium   # один раз, для pnpm test:e2e
+pnpm exec playwright install chromium firefox webkit   # один раз, для pnpm test:e2e
 ```
 
 pnpm 11 не запускает postinstall-скрипты зависимостей, пока они не разрешены в

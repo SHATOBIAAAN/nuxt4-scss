@@ -45,7 +45,8 @@ jobs:
       - run: pnpm build
 
       # Браузер против прод-сборки: консоль без ошибок, CSP, гидрация, навигация, поиск.
-      - run: pnpm exec playwright install --with-deps chromium
+      # Firefox, WebKit и iPhone (WebKit) — для engines.e2e.ts: что расходится между движками
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:e2e
 
       - uses: actions/upload-artifact@v7

@@ -180,6 +180,46 @@ describe('разметка и стили', () => {
 
     expect(offenders).toEqual([]);
   });
+
+  /* Без #fallback ClientOnly до монтирования рендерит пустой <span>. Во flex-строке (шапка,
+     кнопка с попапом) это лишний элемент со своим промежутком: после гидрации он пропадает,
+     и соседи прыгают. Пустой <template #fallback /> не рендерит ничего */
+  it('у <ClientOnly> есть #fallback — до монтирования на его месте нет лишнего <span>', () => {
+    const offenders = vueFiles.filter((file) =>
+      [...stripComments(read(file)).matchAll(/<ClientOnly\b[^>]*>([\s\S]*?)<\/ClientOnly>/g)].some(
+        ([, body = '']) => !/<template\s+(#fallback|v-slot:fallback)\b/.test(body),
+      ),
+    );
+
+    expect(offenders).toEqual([]);
+  });
+
+  /* zod 4, создавая схему объекта, пробует Function('') — под CSP сайта это нарушение, Firefox пишет
+     его в консоль. shared/utils/zod включает jitless раньше первой схемы; типы — откуда угодно */
+  it('zod подключается только через shared/utils/zod (import type — можно)', () => {
+    const offenders = sourceFiles.filter(
+      (file) =>
+        file !== 'shared/utils/zod.ts' &&
+        /^\s*import\s+(?!type\b)[^;]*?from\s+['"]zod['"]/m.test(read(file)),
+    );
+
+    expect(offenders).toEqual([]);
+  });
+
+  /* С плавной прокруткой у html новая страница открывается с места прежней и доезжает до верха
+     на глазах, а якорь при загрузке не доезжает до блока. Плавно — только в app/router.options.ts */
+  it('scroll-behavior не задаётся в стилях — прокруткой ведает app/router.options.ts', () => {
+    const offenders = [
+      ...withExt(walk('app/assets/styles'), '.scss', '.css').filter((file) =>
+        /(?<![\w-])scroll-behavior\s*:/.test(stripComments(read(file))),
+      ),
+      ...vueFiles.filter((file) =>
+        styleBlocks(file).some((css) => /(?<![\w-])scroll-behavior\s*:/.test(css)),
+      ),
+    ];
+
+    expect(offenders).toEqual([]);
+  });
 });
 
 describe('дерево файлов', () => {
