@@ -13,6 +13,7 @@ const onOpenChange = (open: boolean) => {
   <AlertDialogRoot :open="confirm.isOpen" @update:open="onOpenChange">
     <!-- ClientOnly: портал на SSR рендерится в пустоту — см. тот же паттерн в NavDrawer -->
     <ClientOnly>
+      <template #fallback />
       <AlertDialogPortal>
         <AlertDialogOverlay class="_Overlay" />
 

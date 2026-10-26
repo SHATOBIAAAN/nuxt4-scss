@@ -18,10 +18,17 @@ watch(() => route.fullPath, overlay.close);
     </DialogTrigger>
 
     <!-- ClientOnly обязателен: портал на SSR рендерится в пустоту, клиент не находит
-         серверный DOM и сообщает «Hydration completed but contains mismatches». -->
+         серверный DOM и сообщает «Hydration completed but contains mismatches».
+         Пустой #fallback — чтобы до монтирования на месте портала не было ничего: без него
+         ClientOnly ставит пустой <span>, он лишний элемент flex-строки шапки, и после
+         монтирования соседи прыгают -->
     <ClientOnly>
+      <template #fallback />
       <DialogPortal>
-        <DialogOverlay class="_Overlay" />
+        <!-- Панель — на весь экран: пока она открыта, страница под ней спрятана
+             (data-covers-page, layout.scss) — Safari на iPhone не рисует панель под своими
+             панелями, и там проступала бы страница -->
+        <DialogOverlay class="_Overlay" data-covers-page />
 
         <DialogContent class="_Panel">
           <div class="content-wrapper _Inner">
@@ -70,13 +77,15 @@ watch(() => route.fullPath, overlay.close);
   background: var(--overlay);
 }
 
+/* Фон — цвет страницы: под панелями Safari на iPhone виден фон html (data-covers-page), и
+   панель другого цвета оказалась бы между двумя полосами цвета страницы */
 ._Panel {
   position: fixed;
   inset: 0;
   z-index: var(--z-drawer);
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--surface);
+  background: var(--page-bg);
 }
 
 ._Inner {

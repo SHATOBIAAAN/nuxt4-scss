@@ -3,6 +3,7 @@
 ```
 app/
   app.vue                     индикатор загрузки, объявление маршрута, мета-теги, canonical
+  router.options.ts           прокрутка при переходах: сразу, плавно — только якорь на странице
   error.vue                   404 и 5xx, рендерится вне app.vue и вне layout
   layouts/default.vue         skip-link, шапка, футер, <AppConfirmHost>
   pages/
@@ -43,12 +44,14 @@ shared/
   schemas/post.ts             zod-схема = тип = проверка
   types/content.ts            Pagination и ListResponse
   utils/query.ts              разбор и канонический вид query по схеме
+  utils/zod.ts                zod с jitless: без пробы eval, которую запрещает CSP
 
 test/
   server/  shared/  app/      unit: чистые функции
   architecture/               правила AGENTS.md: v-html, цвета, hover, h1, зависимости, доки
   nuxt/                       компоненты в окружении Nuxt (@nuxt/test-utils, happy-dom)
-  e2e/                        Playwright против прод-сборки
+  e2e/                        Playwright против прод-сборки: smoke — Chromium,
+                              engines — ещё Firefox, WebKit и iPhone
 ```
 
 ## Что где менять

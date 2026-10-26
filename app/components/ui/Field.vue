@@ -80,6 +80,8 @@ const id = useId();
   pointer-events: none;
 }
 
+/* Кегль — от 16 px (font: inherit, у документа 16): с меньшим iPhone приближает страницу при
+   фокусе и сам её не отдаляет. Сторожит e2e (engines.e2e.ts, «поля ввода не мельче 16 px») */
 ._Input {
   width: 100%;
   min-height: var(--ui-height-44);

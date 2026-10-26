@@ -17,7 +17,13 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: 'retain-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // Firefox, Safari и iPhone — только то, что расходится между движками: engines.e2e.ts
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] }, testMatch: '**/engines.e2e.ts' },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] }, testMatch: '**/engines.e2e.ts' },
+    { name: 'iphone', use: { ...devices['iPhone 15'] }, testMatch: '**/engines.e2e.ts' },
+  ],
   webServer: {
     command: 'node .output/server/index.mjs',
     url: BASE_URL,
